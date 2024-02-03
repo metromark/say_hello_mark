@@ -7,9 +7,10 @@ setup(
   author_email="mark@onebyzero.ai",
   url="www.google.com",
   packages=find_packages(),
-  install_requires=[
   long_description="Test long description",
-  long_description_content_type='text/markdown'
+  long_description_content_type='text/markdown',
+  install_requires=[
+
   ],
   entry_points={
     "console_scripts": [
