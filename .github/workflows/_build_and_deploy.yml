@@ -7,8 +7,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  docs:
+  pypi-publish:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write 
     steps:
       - name: Checkout Code
         uses: actions/checkout@main
@@ -24,7 +26,7 @@ jobs:
 
       - name: Publish to public repository
         if: github.ref == 'refs/heads/main'
-        uses: pypa/gh-action-pypi-publish@master
+        uses: pypa/gh-action-pypi-publish@release/v1
         # working-directory: src
         with:
           password: ${{ secrets.PYPI_TOKEN }}
