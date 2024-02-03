@@ -24,8 +24,8 @@ jobs:
 
       - name: Publish to public repository
         if: github.ref == 'refs/heads/main'
+        uses: pypa/gh-action-pypi-publish@master
         # working-directory: src
-        run: |
-          export TWINE_USERNAME=token
-          export TWINE_PASSWORD=${{ secrets.PYPI_TOKEN }}
-          python3 -m twine upload --repository pypi dist/*
+        with:
+          password: ${{ secrets.PYPI_TOKEN }}
+          repository_url: https://upload.pypi.org/legacy/  
