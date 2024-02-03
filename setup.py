@@ -5,7 +5,7 @@ setup(
   version="0.5",
   author="Mark Toledo",
   author_email="mark@onebyzero.ai",
-  url="www.google.com",
+  # url="www.google.com",
   packages=find_packages(),
   long_description="Test long description",
   long_description_content_type='text/markdown',
