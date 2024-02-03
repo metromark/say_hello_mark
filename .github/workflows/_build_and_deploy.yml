@@ -27,5 +27,5 @@ jobs:
         # working-directory: src
         run: |
           export TWINE_USERNAME=token
-          export TWINE_PASSWORD={{ secrets.PYPI_TOKEN }}
+          export TWINE_PASSWORD=${{ secrets.PYPI_TOKEN }}
           python3 -m twine upload --repository pypi dist/*
