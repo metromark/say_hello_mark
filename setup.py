@@ -8,7 +8,8 @@ setup(
   url="www.google.com",
   packages=find_packages(),
   install_requires=[
-
+  long_description="Test long description",
+  long_description_content_type='text/markdown'
   ],
   entry_points={
     "console_scripts": [
