@@ -50,12 +50,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-      
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          role-to-assume: arn:aws:iam::208761073495:role/OneByZeroGithubActions
-          aws-region: ap-southeast-1
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -69,7 +63,26 @@ jobs:
           npm ci
           npm run build
 
-  publish-npm:
+  publish-internal-npm:
+    needs: npm-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::208761073495:role/OneByZeroGithubActions
+          aws-region: ap-southeast-1
+
+      - name: Publish to internal repository
+        working-directory: ts-api
+        run: |
+          aws codeartifact login --tool npm --repository npm_test --domain onebyzero-internal --domain-owner 208761073495 --region us-east-1
+          npm publish
+
+  publish-external-npm:
     needs: npm-build
     runs-on: ubuntu-latest
     steps:
@@ -81,12 +94,11 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
-
+      
       - name: Publish to external repo
         working-directory: ts-api
-        run:  |
+        run: |
           npm ci
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          
