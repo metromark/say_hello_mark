@@ -65,10 +65,12 @@ jobs:
       - name: Build
         working-directory: ts-api
         run:  |
+          npm install
           npm ci
-          npm test
+          npm run build
 
   publish-npm:
+    needs: npm-build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
