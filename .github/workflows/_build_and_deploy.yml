@@ -38,8 +38,10 @@ jobs:
           python3 -m twine upload --repository codeartifact dist/* --verbose
 
       - name: Publish to public repository
-        working-directory: py-api
         if: github.ref == 'refs/heads/main'
+        run: |
+          cd py-api
+        working-directory: py-api
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
