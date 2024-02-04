@@ -79,11 +79,12 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
-      
+
       - name: Publish to external repo
-        - working-directory: ts-api
-          run:  |
-            npm ci
-            npm publish
-          env:
-            NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        working-directory: ts-api
+        run:  |
+          npm ci
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          
