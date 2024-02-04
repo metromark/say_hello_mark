@@ -14,7 +14,7 @@ setup(
   ],
   entry_points={
     "console_scripts": [
-      "say-hello-mark = py-api/say_hello_mark:hello" 
+      "say-hello-mark = say_hello_mark:hello" 
     ]
   }
 )
