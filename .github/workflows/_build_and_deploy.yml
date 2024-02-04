@@ -26,13 +26,13 @@ jobs:
         uses: actions/setup-python@v3
 
       - name: Build
-        working-directory: py-api/say_hello_mark
+        # working-directory: py-api/say_hello_mark
         run: |
           python3 -m pip install --upgrade build twine
           python3 -m build
       
       - name: Publish to internal repository
-        working-directory: py-api
+        # working-directory: py-api/say_hello_mark
         run: |
           aws codeartifact login --tool twine --repository pypi_test --domain onebyzero-internal --domain-owner 208761073495 --region us-east-1
           python3 -m twine upload --repository codeartifact dist/* --verbose
