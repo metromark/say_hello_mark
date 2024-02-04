@@ -69,7 +69,6 @@ jobs:
           npm test
 
   publish-npm:
-    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
