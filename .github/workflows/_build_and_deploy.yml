@@ -35,7 +35,6 @@ jobs:
         working-directory: 
         run: |
           aws codeartifact login --tool twine --repository pypi_test --domain onebyzero-internal --domain-owner 208761073495 --region us-east-1 --verbose
-          python3 -m twine upload --repository codeartifact dist/*
 
       - name: Publish to public repository
         if: github.ref == 'refs/heads/main'
