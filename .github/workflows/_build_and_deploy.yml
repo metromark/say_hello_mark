@@ -35,10 +35,10 @@ jobs:
         working-directory: py-api
         run: |
           aws codeartifact login --tool twine --repository pypi_test --domain onebyzero-internal --domain-owner 208761073495 --region us-east-1
-          ls
           python3 -m twine upload --repository codeartifact dist/* --verbose
 
       - name: Publish to public repository
+        working-directory: py-api
         if: github.ref == 'refs/heads/main'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
