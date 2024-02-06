@@ -106,7 +106,7 @@ jobs:
       - name: Publish to internal repository
         working-directory: py-api
         run: |
-          aws codeartifact login --tool twine --repository onebyzero-internal-repo --domain onebyzero-internal --domain-owner 208761073495 --region us-east-1
+          aws codeartifact login --tool twine --repository pypi_test --domain onebyzero-internal --domain-owner 208761073495 --region us-east-1
           python3 -m twine upload --repository codeartifact dist/* --verbose
 
   pypi-external:
@@ -152,6 +152,12 @@ jobs:
           npm install
           npm ci
           npm run build
+      
+      - name: upload windows dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-dists
+          path: ts-api/dist
 
   # npm-build-ts-bot-adapter:
   #   runs-on: ubuntu-latest
@@ -180,6 +186,12 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Retrieve release distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: release-dists
+          path: ts-api/dist
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
