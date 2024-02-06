@@ -45,12 +45,12 @@ jobs:
         files: |
           ts-api/**
     
-    - name: Get ts-bot-adapter service changed files
-      id: ts-bot-adapter-service-changed-files
-      uses: tj-actions/changed-files@v42
-      with:
-        files: |
-          ts-bot-adapter/**
+    # - name: Get ts-bot-adapter service changed files
+    #   id: ts-bot-adapter-service-changed-files
+    #   uses: tj-actions/changed-files@v42
+    #   with:
+    #     files: |
+    #       ts-bot-adapter/**
 
   pypi-build:
     runs-on: ubuntu-latest
@@ -141,26 +141,29 @@ jobs:
           npm ci
           npm run build
 
-  npm-build-ts-bot-adapter:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+  # npm-build-ts-bot-adapter:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v3
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 16
       
-      - name: Build ts-bot-adapter
-        working-directory: ts-bot-adapter
-        run:  |
-          npm install
-          npm ci
-          npm run build
+  #     - name: Build ts-bot-adapter
+  #       working-directory: ts-bot-adapter
+  #       run:  |
+  #         npm install
+  #         npm ci
+  #         npm run build
 
   publish-internal-npm:
-    needs: [npm-build-ts-api, npm-build-ts-bot-adapter]
+    needs: [
+        npm-build-ts-api
+        # , npm-build-ts-bot-adapter
+        ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -178,11 +181,11 @@ jobs:
           aws codeartifact login --tool npm --repository npm_store --domain onebyzero-internal --domain-owner 208761073495 --region us-east-1
           npm publish
 
-      - name: Publish ts-bot-adapter to internal repository
-        working-directory: ts-bot-adapter
-        run: |
-          aws codeartifact login --tool npm --repository npm_store --domain onebyzero-internal --domain-owner 208761073495 --region us-east-1
-          npm publish
+      # - name: Publish ts-bot-adapter to internal repository
+      #   working-directory: ts-bot-adapter
+      #   run: |
+      #     aws codeartifact login --tool npm --repository npm_store --domain onebyzero-internal --domain-owner 208761073495 --region us-east-1
+      #     npm publish
 
   publish-ts-api-external-npm:
     needs: npm-build-ts-api
@@ -205,23 +208,23 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-  publish-ts-bot-adapter-external-npm:
-    needs: npm-build-ts-bot-adapter
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+  # publish-ts-bot-adapter-external-npm:
+  #   needs: npm-build-ts-bot-adapter
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v3
 
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          registry-url: https://registry.npmjs.org/
+  #     - name: Setup node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 16
+  #         registry-url: https://registry.npmjs.org/
 
-      - name: Publish ts-bot-adapter to external repo
-        working-directory: ts-bot-adapter
-        run: |
-          npm ci
-          npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  #     - name: Publish ts-bot-adapter to external repo
+  #       working-directory: ts-bot-adapter
+  #       run: |
+  #         npm ci
+  #         npm publish
+  #       env:
+  #         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
