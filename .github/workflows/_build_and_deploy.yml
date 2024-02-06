@@ -10,7 +10,7 @@ permissions:
   id-token: write 
 
 jobs:
-  pypi-publish:
+  pypi-build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -30,20 +30,45 @@ jobs:
         run: |
           python3 -m pip install --upgrade build twine
           python3 -m build
-      
+
+      - name: Publish to public repository
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-dists
+          path: py-api/dist
+
+
+  pypy-publish:
+    runs-on: ubuntu-latest
+    needs: 
+      - pypi-build
+    permissions:
+      id-token: write
+    
+    steps:      
       - name: Publish to internal repository
         working-directory: py-api
         run: |
           aws codeartifact login --tool twine --repository pypi_test --domain onebyzero-internal --domain-owner 208761073495 --region us-east-1
           python3 -m twine upload --repository codeartifact dist/* --verbose
 
-      - name: Publish to public repository
-        if: github.ref == 'refs/heads/main'
-        uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Retrieve release distributions
+        uses: actions/download-artifact@v4
         with:
-          user: __token__
-          password: ${{ secrets.PYPI_TOKEN }}
-          packages-dir: py-api/dist
+          name: release-dists
+          path: py-api/dist
+        
+      - name: Publish release distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+      # - name: Publish to public repository
+      #   if: github.ref == 'refs/heads/main'
+      #   uses: pypa/gh-action-pypi-publish@release/v1
+      #   with:
+      #     user: __token__
+      #     password: ${{ secrets.PYPI_TOKEN }}
+      #     packages-dir: py-api/dist
 
   npm-build:
     runs-on: ubuntu-latest
