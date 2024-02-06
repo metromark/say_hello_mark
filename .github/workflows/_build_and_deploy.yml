@@ -63,6 +63,8 @@ jobs:
         
       - name: Publish release distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: py-api/dist
 
       # - name: Publish to public repository
       #   if: github.ref == 'refs/heads/main'
