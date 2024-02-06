@@ -31,6 +31,12 @@ jobs:
           python3 -m pip install --upgrade build twine
           python3 -m build
 
+      - name: Publish to internal repository
+        working-directory: py-api
+        run: |
+          aws codeartifact login --tool twine --repository pypi_test --domain onebyzero-internal --domain-owner 208761073495 --region us-east-1
+          python3 -m twine upload --repository codeartifact dist/* --verbose
+
       - name: Publish to public repository
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
@@ -47,12 +53,6 @@ jobs:
       id-token: write
     
     steps:      
-      - name: Publish to internal repository
-        working-directory: py-api
-        run: |
-          aws codeartifact login --tool twine --repository pypi_test --domain onebyzero-internal --domain-owner 208761073495 --region us-east-1
-          python3 -m twine upload --repository codeartifact dist/* --verbose
-
       - name: Retrieve release distributions
         uses: actions/download-artifact@v4
         with:
