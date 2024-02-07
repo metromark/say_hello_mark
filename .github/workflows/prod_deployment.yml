@@ -2,9 +2,9 @@ name: New Production Workflow
 on:
   push:
     branches:
-      development
-    # tags:
-    #   - 'v*'
+      production
+      # tags:
+      #   - 'v*'
   workflow_dispatch:
 
 permissions:
