@@ -202,17 +202,18 @@ jobs:
           path: ts-api/dist
 
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: '20.x'
           registry-url: https://registry.npmjs.org/
       
       - name: Publish ts-api to external repo
         working-directory: ts-api
         run: |
+          npm ci
           npm publish
         env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
