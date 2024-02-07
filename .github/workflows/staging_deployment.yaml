@@ -14,10 +14,11 @@ permissions:
 jobs:
   call-workflow:
     uses: ./.github/workflows/_build_and_deploy.yml
-    # with:
+    with:
       # aws-role-to-assume: arn:aws:iam::975226449092:role/OneByZeroGithubActions
       # aws-region: us-east-1
       # aws-account-id: 975226449092
       # eks-cluster-name: assets-app-eks-cluster
       # env: staging
       # version: -alpha
+      npm_token: ${{ secrets.NPM_TOKEN }}

@@ -2,7 +2,10 @@ name: Build Services and Deploy
 
 on:
   workflow_call:
-    # inputs:
+    inputs:
+      npm_token:
+        required: true
+        type: string
     #   aws-role-to-assume:
     #     required: true
     #     type: string
@@ -213,4 +216,4 @@ jobs:
           npm ci
           npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ inputs.npm_token }}
