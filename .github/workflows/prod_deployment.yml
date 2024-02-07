@@ -37,7 +37,7 @@ jobs:
           github_token: ${{ github.token }}
           # repo: metromark/say_hello_mark
           name: py-release-dists
-          # workflow: staging_deployment.yml
+          workflow: staging_deployment.yml
           path: py-api/dist
           # check_artifacts: true
           search_artifacts: true
