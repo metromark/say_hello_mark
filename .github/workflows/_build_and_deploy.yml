@@ -195,11 +195,11 @@ jobs:
     needs: npm-build-ts-api
     runs-on: ubuntu-latest
     steps:
-      # - name: Retrieve release distributions
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: npm-release-dists
-      #     path: ts-api/dist
+      - name: Retrieve release distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: npm-release-dists
+          path: ts-api/dist
 
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -216,4 +216,4 @@ jobs:
           npm ci
           npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ inputs.npm_token }}
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
