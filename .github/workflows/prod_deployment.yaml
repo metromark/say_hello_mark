@@ -2,8 +2,10 @@ name: Production Workflow
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      production
+    # tags:
+    #   - 'v*'
   workflow_dispatch:
 
 # permission can be added at job level or workflow level    
@@ -13,7 +15,7 @@ permissions:
 
 jobs:
   call-workflow:
-    uses: ./.github/workflows/_build_and_deploy.yaml
+    uses: ./.github/workflows/_build_and_deploy.yml
     with:
       aws-role-to-assume: arn:aws:iam::637423496159:role/OneByZeroGithubActions
       aws-region: ap-southeast-1
