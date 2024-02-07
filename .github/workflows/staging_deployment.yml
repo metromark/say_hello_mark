@@ -96,6 +96,7 @@ jobs:
 
 
   npm-build:
+    needs: diff-check
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
