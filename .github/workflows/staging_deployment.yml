@@ -1,27 +1,15 @@
-name: Build Services and Deploy
+name: New Staging Workflow
 
 on:
-  workflow_call:
-    inputs:
-      aws-role-to-assume:
-        required: true
-        type: string
-      aws-region:
-        required: true
-        type: string
-      aws-account-id:
-        required: true
-        type: string
-      env:
-        required: true
-        type: string
+  push:
+    branches:
+      - development
+  workflow_dispatch:
 
-# permission can be added at job level or workflow level    
 permissions:
-  id-token: write   # This is required for requesting the JWT
-  contents: read    # This is required for actions/checkout
+  id-token: write
+  contents: read
 
-# separate container altogether, each job executes on container.
 jobs:
   diff-check:
     runs-on: ubuntu-latest
@@ -46,14 +34,7 @@ jobs:
       with:
         files: |
           ts-api/**
-    
-    # - name: Get ts-bot-adapter service changed files
-    #   id: ts-bot-adapter-service-changed-files
-    #   uses: tj-actions/changed-files@v42
-    #   with:
-    #     files: |
-    #       ts-bot-adapter/**
-
+  
   pypi-build:
     runs-on: ubuntu-latest
     needs: diff-check
@@ -85,7 +66,7 @@ jobs:
       with:
         name: py-release-dists
         path: py-api/dist
-  
+
   pypi-internal:
     runs-on: ubuntu-latest
     needs: pypi-build
@@ -113,34 +94,9 @@ jobs:
           python3 -m pip install --upgrade build twine
           python3 -m twine upload --repository codeartifact dist/* --verbose
 
-  pypi-external:
+
+  npm-build:
     runs-on: ubuntu-latest
-    needs: pypi-build
-    permissions:
-      contents: read
-      id-token: write
-    
-    steps:  # downloading the build. Do the same step in npm build
-      - name: Retrieve release distributions
-        uses: actions/download-artifact@v4
-        with:
-          name: py-release-dists
-          path: py-api/dist
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          role-to-assume: arn:aws:iam::208761073495:role/OneByZeroGithubActions
-          aws-region: ap-southeast-1
-
-      - name: Publish release distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          packages-dir: py-api/dist
-
-  npm-build-ts-api:
-    runs-on: ubuntu-latest
-    needs: diff-check
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -150,52 +106,19 @@ jobs:
         with:
           node-version: 16
 
-      - name: Build TS-API
+      - name: Build
         working-directory: ts-api
         run:  |
           npm install
           npm ci
           npm run build
-      
-      - name: upload windows dist
-        uses: actions/upload-artifact@v4
-        with:
-          name: npm-release-dists
-          path: ts-api/dist
-
-  # npm-build-ts-bot-adapter:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout Code
-  #       uses: actions/checkout@v3
-
-  #     - name: Setup Node
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 16
-      
-  #     - name: Build ts-bot-adapter
-  #       working-directory: ts-bot-adapter
-  #       run:  |
-  #         npm install
-  #         npm ci
-  #         npm run build
 
   publish-internal-npm:
-    needs: [
-        npm-build-ts-api
-        # , npm-build-ts-bot-adapter
-        ]
+    needs: npm-build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-
-      - name: Retrieve release distributions
-        uses: actions/download-artifact@v4
-        with:
-          name: npm-release-dists
-          path: ts-api/dist
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
@@ -203,20 +126,14 @@ jobs:
           role-to-assume: arn:aws:iam::208761073495:role/OneByZeroGithubActions
           aws-region: ap-southeast-1
 
-      - name: Publish ts-api to internal repository
+      - name: Publish to internal repository
         working-directory: ts-api
         run: |
           aws codeartifact login --tool npm --repository npm_test --domain onebyzero-internal --domain-owner 208761073495 --region us-east-1
           npm publish
 
-      # - name: Publish ts-bot-adapter to internal repository
-      #   working-directory: ts-bot-adapter
-      #   run: |
-      #     aws codeartifact login --tool npm --repository npm_store --domain onebyzero-internal --domain-owner 208761073495 --region us-east-1
-      #     npm publish
-
-  publish-ts-api-external-npm:
-    needs: npm-build-ts-api
+  publish-external-npm:
+    needs: npm-build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -228,15 +145,10 @@ jobs:
           node-version: 16
           registry-url: https://registry.npmjs.org/
 
-      - name: Retrieve release distributions
-        uses: actions/download-artifact@v4
-        with:
-          name: npm-release-dists
-          path: ts-api/dist
-      
-      - name: Publish ts-api to external repo
+      - name: Publish to external repo
         working-directory: ts-api
         run: |
+          npm ci
           npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_NEW_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
