@@ -2,19 +2,19 @@ name: Build Services and Deploy
 
 on:
   workflow_call:
-    inputs:
-      aws-role-to-assume:
-        required: true
-        type: string
-      aws-region:
-        required: true
-        type: string
-      aws-account-id:
-        required: true
-        type: string
-      env:
-        required: true
-        type: string
+    # inputs:
+    #   aws-role-to-assume:
+    #     required: true
+    #     type: string
+    #   aws-region:
+    #     required: true
+    #     type: string
+    #   aws-account-id:
+    #     required: true
+    #     type: string
+    #   env:
+    #     required: true
+    #     type: string
 
 # permission can be added at job level or workflow level    
 permissions:
