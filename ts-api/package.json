@@ -1,6 +1,6 @@
 {
   "name": "say_hello_mark",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "description": "Just a test package",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
