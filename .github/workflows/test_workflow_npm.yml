@@ -3,7 +3,7 @@ name: Test Workflow
 on:
   push:
     branches:
-      - development
+      - oicd
   workflow_dispatch:
 
 permissions:
