@@ -1,9 +1,9 @@
-name: Build and deploy Python package
+name: Test workflow (working NPM publish)
 
 on:
   push:
     branches:
-      - main
+      - oicd
   workflow_dispatch:
 
 permissions:
