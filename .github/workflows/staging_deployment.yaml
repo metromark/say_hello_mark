@@ -21,4 +21,4 @@ jobs:
       # eks-cluster-name: assets-app-eks-cluster
       # env: staging
       # version: -alpha
-      npm_token: ${{ secrets.NPM_TOKEN }}
+      npm_token: ${{ github.token }}
