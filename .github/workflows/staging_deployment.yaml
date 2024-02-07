@@ -1,0 +1,23 @@
+name: Staging Workflow
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# permission can be added at job level or workflow level    
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout
+
+jobs:
+  call-workflow:
+    uses: ./.github/workflows/_build_and_deploy.yml
+    with:
+      aws-role-to-assume: arn:aws:iam::975226449092:role/OneByZeroGithubActions
+      aws-region: us-east-1
+      aws-account-id: 975226449092
+      # eks-cluster-name: assets-app-eks-cluster
+      env: staging
+      # version: ${{ github.sha }}-alpha
