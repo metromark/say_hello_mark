@@ -1,8 +1,10 @@
 name: New Production Workflow
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      development
+    # tags:
+    #   - 'v*'
   workflow_dispatch:
 
 permissions:
@@ -25,7 +27,7 @@ jobs:
 
       - name: Retrieve release distributions
         env:
-          GH_TOKEN: ${{ github.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: | # gh run download RUN_ID --name ARTIFACT_NAME
           gh run download 1228424694 --name py-release-dists              
 
