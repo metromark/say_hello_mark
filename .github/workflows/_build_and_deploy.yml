@@ -190,7 +190,13 @@ jobs:
         run: |
           aws codeartifact login --tool npm --repository npm_test --domain onebyzero-internal --domain-owner 208761073495 --region us-east-1
           npm publish
-      
+
+      - name: Publish ts-api to external repo
+        working-directory: ts-api
+        run: |
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       # - name: Publish ts-api to external repo
       #   working-directory: ts-api
       #   run: |
@@ -220,6 +226,7 @@ jobs:
       - name: Publish ts-api to external repo
         working-directory: ts-api
         run: |
+          npm ci
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
