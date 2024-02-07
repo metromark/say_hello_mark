@@ -234,8 +234,6 @@ jobs:
       - name: Publish ts-api to external repo
         working-directory: ts-api
         run: |
-          npm install
-          npm ci
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

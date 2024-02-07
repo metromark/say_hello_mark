@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
   name="say_hello_mark",
-  version="0.28",
+  version="0.29",
   author="Mark Toledo",
   author_email="mark@onebyzero.ai",
   # url="www.google.com",
